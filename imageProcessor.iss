@@ -18,6 +18,7 @@ Name: "desktopicon\uninstall"; Description: "Remove desktop icon during uninstal
 Name: "{group}\ImageRefiner"; Filename: "{app}\ImageRefiner.exe"
 Name: "{commondesktop}\ImageRefiner"; Filename: "{app}\ImageRefiner.exe"; Tasks: desktopicon
 
+
 [UninstallDelete]
 Type: filesandordirs; Name: "{commondesktop}\ImageRefiner.lnk"; Tasks: desktopicon\uninstall
 

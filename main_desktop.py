@@ -35,6 +35,8 @@ class ImageMaskingApp:
         self.button_frame.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
         self.button_frame.columnconfigure(0, weight=1)
 
+
+        # create side buttons
         self.upload_button = tk.Button(
             self.button_frame,
             text="Upload Image",
@@ -86,6 +88,46 @@ class ImageMaskingApp:
         self.image = None
         self.cropped_image = None
 
+
+        self.resize_button = tk.Button(
+            self.button_frame,
+            text="Resize Image",
+            command=self.resize_image,
+            bg="#FFC107",
+            fg="white",
+            font=("Arial", 12),
+            padx=10,
+            pady=5,
+        )
+        self.resize_button.pack(padx=10, pady=10, side=tk.TOP, fill=tk.X)
+
+
+        # define form inputs
+        self.width_label = tk.Label(
+            self.button_frame,
+            text="Width:",
+            font=("Arial", 12),
+            padx=10,
+            pady=5,
+        )
+        self.width_label.pack(side=tk.TOP, anchor="w")
+
+        self.width_entry = tk.Entry(self.button_frame, font=("Arial", 12))
+        self.width_entry.pack(side=tk.TOP, fill=tk.X, padx=10, pady=5)
+
+        self.height_label = tk.Label(
+            self.button_frame,
+            text="Height:",
+            font=("Arial", 12),
+            padx=10,
+            pady=5,
+        )
+        self.height_label.pack(side=tk.TOP, anchor="w")
+
+        self.height_entry = tk.Entry(self.button_frame, font=("Arial", 12))
+        self.height_entry.pack(side=tk.TOP, fill=tk.X, padx=10, pady=5)
+
+    # helper functions
     def upload_image(self):
         global file_path
         file_path = filedialog.askopenfilename()
@@ -199,6 +241,33 @@ class ImageMaskingApp:
         image[y : y + h, x : x + w] = blurred_roi
         cv2.imwrite(file_path, image)
         self.display_image_with_rect()
+    
+
+    def resize_image(self):
+        if self.image is None:
+            self.show_error_message("Please upload an image first.")
+            return
+
+        try:
+            target_width = int(self.width_entry.get())
+            target_height = int(self.height_entry.get())
+        except ValueError:
+            self.show_error_message("Invalid width or height. Please enter integers.")
+            return
+
+        if target_width <= 0 or target_height <= 0:
+            self.show_error_message("Width and height must be positive integers.")
+            return
+
+        self.image = cv2.resize(self.image, (target_width, target_height))
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".jpg", filetypes=[("JPEG files", "*.jpg")]
+        )
+        if file_path:
+            cv2.imwrite(file_path, self.image)
+            print("resize image saved successfully!")
+        self.display_image()
+
 
 
 if __name__ == "__main__":

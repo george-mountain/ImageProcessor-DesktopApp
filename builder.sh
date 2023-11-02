@@ -1,0 +1,1 @@
+pyinstaller --onefile --windowed --icon=C:/Users/georg/Desktop/SRimage_data/icon_dir/icon_file.ico --name=ImageRefiner main_desktop.py
