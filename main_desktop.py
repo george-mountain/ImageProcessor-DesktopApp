@@ -87,6 +87,7 @@ class ImageMaskingApp:
         self.cropped_image = None
 
     def upload_image(self):
+        global file_path
         file_path = filedialog.askopenfilename()
         if file_path:
             self.image = cv2.imread(file_path)
@@ -170,20 +171,34 @@ class ImageMaskingApp:
                 self.save_cropped_image()
 
         elif event == cv2.EVENT_MOUSEMOVE and mouse_down:
-            rect_roi = (rect_roi[0], rect_roi[1], x - rect_roi[0], y - rect_roi[1])
+            if rect_roi is not None:
+                rect_roi = (rect_roi[0], rect_roi[1], x - rect_roi[0], y - rect_roi[1])
+                self.display_image_with_rect()
+
         elif event == cv2.EVENT_LBUTTONUP:
             mouse_down = False
             if rect_roi[2] > 0 and rect_roi[3] > 0:
                 self.blur_and_mask_area(param, rect_roi)
             rect_roi = None
 
-    @staticmethod
-    def blur_and_mask_area(image, points, blur_factor=65):
+    def display_image_with_rect(self):
+        image_with_rect = self.image.copy()
+        if rect_roi is not None:
+            x, y, w, h = rect_roi
+            cv2.rectangle(image_with_rect, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        image_rgb = cv2.cvtColor(image_with_rect, cv2.COLOR_BGR2RGB)
+        image_pil = Image.fromarray(image_rgb)
+        image_tk = ImageTk.PhotoImage(image=image_pil)
+        self.preview_label.config(image=image_tk)
+        self.preview_label.image = image_tk
+
+    def blur_and_mask_area(self, image, points, blur_factor=65):
         x, y, w, h = points
         roi = image[y : y + h, x : x + w]
         blurred_roi = cv2.GaussianBlur(roi, (blur_factor, blur_factor), 0)
         image[y : y + h, x : x + w] = blurred_roi
-        return image
+        cv2.imwrite(file_path, image)
+        self.display_image_with_rect()
 
 
 if __name__ == "__main__":
