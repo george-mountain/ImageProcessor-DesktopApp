@@ -3,7 +3,8 @@ import numpy as np
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
-
+import os
+import sys
 
 mouse_down = False
 rect_roi = None
@@ -34,7 +35,6 @@ class ImageMaskingApp:
         self.button_frame = tk.Frame(root)
         self.button_frame.grid(row=0, column=2, padx=20, pady=20, sticky="nsew")
         self.button_frame.columnconfigure(0, weight=1)
-
 
         # create side buttons
         self.upload_button = tk.Button(
@@ -88,7 +88,6 @@ class ImageMaskingApp:
         self.image = None
         self.cropped_image = None
 
-
         self.resize_button = tk.Button(
             self.button_frame,
             text="Resize Image",
@@ -100,7 +99,6 @@ class ImageMaskingApp:
             pady=5,
         )
         self.resize_button.pack(padx=10, pady=10, side=tk.TOP, fill=tk.X)
-
 
         # define form inputs
         self.width_label = tk.Label(
@@ -241,7 +239,6 @@ class ImageMaskingApp:
         image[y : y + h, x : x + w] = blurred_roi
         cv2.imwrite(file_path, image)
         self.display_image_with_rect()
-    
 
     def resize_image(self):
         if self.image is None:
@@ -269,10 +266,18 @@ class ImageMaskingApp:
         self.display_image()
 
 
-
 if __name__ == "__main__":
     root = tk.Tk()
     root.state("zoomed")
-    root.iconbitmap("C:/Users/georg/Desktop/SRimage_data/icon_dir/icon_file.ico")
+
+    base_dir = getattr(sys, "_MEIPASS", os.getcwd())
+
+    icon_path = os.path.join(base_dir, "icon_dir", "icon_file.ico")
+
+    # Check if the icon file exists before setting it
+    if os.path.exists(icon_path):
+        root.iconbitmap(icon_path)
+    else:
+        print("Icon file not found:", icon_path)
     app = ImageMaskingApp(root)
     root.mainloop()
