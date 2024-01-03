@@ -5,7 +5,7 @@ a = Analysis(
     ['main_desktop.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('icon_dir', 'icon_dir')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -34,5 +34,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['C:\\Users\\georg\\Desktop\\SRimage_data\\icon_dir\\icon_file.ico'],
+    icon=['icon_dir\\icon_file.ico'],
 )
